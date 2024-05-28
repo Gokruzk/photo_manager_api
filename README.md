@@ -14,4 +14,4 @@ pip install -r requirements.txt
 
 Schema: public  
 Database: photo_manager  
-<img src=<https://github.com/Gokruzk/photo_manager_api/blob/main/database_model.png> height=500 width=700>
+<img src="https://github.com/Gokruzk/photo_manager_api/blob/main/database_model.png" height=500 width=700 alt="database model">
