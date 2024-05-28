@@ -13,6 +13,8 @@ model Ubication {
     country String   @map("country") @db.VarChar(100)
     Images  Images[]
     User    User[]
+
+    @@map("ubication")
 }
 
 model Images {
@@ -28,6 +30,8 @@ model State {
     cod_state Int    @id
     state     String @map("state") @db.VarChar(8)
     User      User[]
+
+    @@map("state")
 }
 
 model Dates {
@@ -35,6 +39,8 @@ model Dates {
     year     Int @map("year")
     month    Int @map("month")
     day      Int @map("day")
+
+    @@map("dates")
 }
 
 model User {
