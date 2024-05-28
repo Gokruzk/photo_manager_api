@@ -24,8 +24,8 @@ async def create_user(data: User):
 
 
 @router.get(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
-async def get_by_nick(username: int = Path(..., alias="username")):
-    data = await UserRoutes.get_by_coduser(username)
+async def get_by_nick(username: str = Path(..., alias="username")):
+    data = await UserRoutes.get_by_nick(username)
     return ResponseSchema(detail="Successfully retreived", result=data)
 
 
