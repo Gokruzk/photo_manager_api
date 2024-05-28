@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Path
 from schema import ResponseSchema
 from Routes.user import UserRoutes
@@ -36,7 +35,7 @@ async def delete_user(cod_user: int = Path(..., alias="id")):
     return ResponseSchema(detail="Successfully deleted")
 
 
-@router.update(path="/{id}", response_model=ResponseSchema, response_model_exclude_none=True)
+@router.put(path="/{id}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def update_user(user: User, cod_user: int = Path(...,alias="id")):
     await UserRoutes.update(user,cod_user)
     return ResponseSchema(detail="Successfully updated")
