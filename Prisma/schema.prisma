@@ -44,7 +44,7 @@ model Images {
 }
 
 model User {
-    cod_user  Int       @id
+    cod_user  Int       @id @default(autoincrement())
     cod_ubi   Int
     cod_state Int
     username  String    @map("username") @db.VarChar(15)
