@@ -23,19 +23,19 @@ async def create_user(data: User):
     return ResponseSchema(detail="Successfully created")
 
 
-@router.get(path="/{id}", response_model=ResponseSchema, response_model_exclude_none=True)
-async def get_by_cod(cod_user: int = Path(..., alias="id")):
-    data = await UserRoutes.get_by_coduser(cod_user)
+@router.get(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
+async def get_by_nick(username: int = Path(..., alias="username")):
+    data = await UserRoutes.get_by_coduser(username)
     return ResponseSchema(detail="Successfully retreived", result=data)
 
 
-@router.delete(path="/{id}", response_model=ResponseSchema, response_model_exclude_none=True)
-async def delete_user(cod_user: int = Path(..., alias="id")):
-    await UserRoutes.delete(cod_user)
+@router.delete(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
+async def delete_user(username: str = Path(..., alias="username")):
+    await UserRoutes.delete(username)
     return ResponseSchema(detail="Successfully deleted")
 
 
-@router.put(path="/{id}", response_model=ResponseSchema, response_model_exclude_none=True)
-async def update_user(user: User, cod_user: int = Path(...,alias="id")):
-    await UserRoutes.update(user,cod_user)
+@router.put(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
+async def update_user(user: User, username: str = Path(..., alias="username")):
+    await UserRoutes.update(user, username)
     return ResponseSchema(detail="Successfully updated")
