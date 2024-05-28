@@ -1,0 +1,51 @@
+generator client {
+    provider             = "prisma-client-py"
+    recursive_type_depth = 5
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DB_URL")
+}
+
+model Ubication {
+    cod_ubi Int      @id
+    country String   @map("country") @db.VarChar(100)
+    Images  Images[]
+    User    User[]
+}
+
+model Images {
+    cod_image Int       @id
+    cod_ubi   Int
+    ubication Ubication @relation(fields: [cod_ubi], references: [cod_ubi])
+    image     String    @map("image")
+
+    @@map("images")
+}
+
+model State {
+    cod_state Int    @id
+    state     String @map("state") @db.VarChar(8)
+    User      User[]
+}
+
+model Dates {
+    cod_date Int @id
+    year     Int @map("year")
+    month    Int @map("month")
+    day      Int @map("day")
+}
+
+model User {
+    cod_user  Int       @id
+    cod_ubi   Int
+    cod_state Int
+    username  String    @map("username") @db.VarChar(15)
+    email     String    @map("email") @db.VarChar(50)
+    password  String    @map("password") @db.Char(64)
+    ubication Ubication @relation(fields: [cod_ubi], references: [cod_ubi])
+    state     State     @relation(fields: [cod_state], references: [cod_state])
+
+    @@map("user")
+}
