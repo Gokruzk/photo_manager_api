@@ -49,7 +49,7 @@ model User {
     cod_state Int
     username  String    @map("username") @db.VarChar(15)
     email     String    @map("email") @db.VarChar(50)
-    password  String    @map("password") @db.Char(64)
+    password  String    @map("password") @db.VarChar(300)
     ubication Ubication @relation(fields: [cod_ubi], references: [cod_ubi])
     state     State     @relation(fields: [cod_state], references: [cod_state])
 
