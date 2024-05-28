@@ -11,7 +11,6 @@ class UserRoutes:
     @staticmethod
     async def create(user: User):
         return await conn.prisma.user.create({
-            "cod_user": user.cod_user,
             "cod_ubi": user.cod_ubi,
             "cod_state": user.cod_state,
             "username": user.username,
@@ -30,7 +29,6 @@ class UserRoutes:
     @staticmethod
     async def update(user: User, cod_user: int):
         return await conn.prisma.user.update(data={
-            "cod_user": user.cod_user,
             "cod_ubi": user.cod_ubi,
             "cod_state": user.cod_state,
             "username": user.username,

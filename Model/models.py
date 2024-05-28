@@ -1,6 +1,8 @@
 from datetime import date
 from pydantic import BaseModel
+from typing import Optional, TypeVar
 
+T = TypeVar("T")
 
 class Ubication(BaseModel):
     cod_ubi: int
@@ -24,7 +26,7 @@ class Images(BaseModel):
     image: str
     
 class User(BaseModel):
-    cod_user: int
+    cod_user: Optional[T] = None
     cod_ubi: int
     cod_state: int
     username: str
