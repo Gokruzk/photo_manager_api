@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from Config.db import conn
-from Controller import user
+from Controller import user, images
 
 
 def init_app():
@@ -14,9 +14,9 @@ def init_app():
         print("Shutdown server")
         await conn.disconnect()
     app = FastAPI(
-        title="Nigell Marcel Jama Oyarvide",
+        title="Gokruzk",
         description="FastAPI Prisma",
-        version="1.0.0",
+        version="0.0.1",
         lifespan=lifespan
     )
 
@@ -25,6 +25,7 @@ def init_app():
         return "Welcome Home!"
 
     app.include_router(user.router)
+    app.include_router(images.router)
 
     return app
 
