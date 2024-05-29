@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Path
 from schema import ResponseSchema
 from Routes.user import UserRoutes
-from Model.models import User
+from Model.models import User, User_
 from passlib.hash import sha256_crypt
 
 router = APIRouter(
@@ -17,7 +17,7 @@ async def get_all():
 
 
 @router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
-async def create_user(data: User):
+async def create_user(data: User_):
     data.password = sha256_crypt.encrypt(data.password)
     await UserRoutes.create(data)
     return ResponseSchema(detail="Successfully created")
