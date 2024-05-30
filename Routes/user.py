@@ -58,11 +58,15 @@ class UserRoutes:
         user_dates = [await conn.prisma.user_dates.create({
             "cod_date": birthday,
             "cod_user": us.cod_user,
-            "description": "birthday"
+            "cod_description": 3
         }), await conn.prisma.user_dates.create({
             "cod_date": created_date,
             "cod_user": us.cod_user,
-            "description": "created"
+            "cod_description": 1
+        }), await conn.prisma.user_dates.create({
+            "cod_date": created_date,
+            "cod_user": us.cod_user,
+            "cod_description": 2
         })]
         return user_post, user_dates
 
@@ -76,12 +80,23 @@ class UserRoutes:
 
     @staticmethod
     async def update(user: User, username: str):
+
         us = await conn.prisma.user.find_first_or_raise(
             where={"username": username})
-        return await conn.prisma.user.update(data={
+
+        formatted_date = datetime.now().strftime('%Y%m%d')
+        updated_date = int(formatted_date)
+
+        await conn.prisma.user.update(data={
             "cod_ubi": user.cod_ubi,
             "cod_state": user.cod_state,
             "username": user.username,
             "email": user.email,
             "password": user.password
         }, where={"cod_user": us.cod_user})
+
+        await conn.prisma.user_dates.update_many(data={
+            "cod_date": updated_date,
+            "cod_user": us.cod_user,
+            "cod_description": 2
+        }, where={"cod_user": us.cod_user, "cod_description": 2})
