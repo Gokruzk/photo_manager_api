@@ -52,10 +52,10 @@ class User(BaseModel):
 class User_Images(BaseModel):
     cod_image: int
     cod_user: int
-    description: str
+    description: Optional[T] = None
 
 
 class User_Dates(BaseModel):
     cod_date: int
     cod_user: int
-    description: str
+    cod_description: int

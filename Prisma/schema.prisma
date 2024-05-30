@@ -25,6 +25,14 @@ model State {
     @@map("state")
 }
 
+model ImgDescription {
+    cod_description Int           @id
+    description     String        @map("description") @db.VarChar(8)
+    User_Dates      User_Dates[]
+
+    @@map("img_description")
+}
+
 model Dates {
     cod_date Int      @id
     year     Int      @map("year")
@@ -38,7 +46,7 @@ model Images {
     cod_image Int       @id @default(autoincrement())
     cod_ubi   Int
     ubication Ubication @relation(fields: [cod_ubi], references: [cod_ubi])
-    image     Bytes    @map("image")
+    image     Bytes     @map("image")
 
     @@map("images")
 }
@@ -57,18 +65,19 @@ model User {
 }
 
 model User_Dates {
-    cod_date    Int
-    cod_user    Int
-    description String
+    cod_date        Int
+    cod_user        Int
+    cod_description Int
+    description     ImgDescription @relation(fields: [cod_description], references: [cod_description])
 
-    @@id([cod_date, cod_user])
+    @@id([cod_date, cod_user, cod_description])
     @@map("user_dates")
 }
 
 model User_Images {
-    cod_image   Int
-    cod_user    Int
-    description String
+    cod_image                     Int
+    cod_user                      Int
+    description                   String
 
     @@id([cod_image, cod_user])
     @@map("user_images")
