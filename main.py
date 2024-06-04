@@ -2,7 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from Config.db import conn
-from Controller import user, images
+from Controller import country, image, user
+from fastapi.middleware.cors import CORSMiddleware
 
 
 def init_app():
@@ -19,13 +20,24 @@ def init_app():
         version="0.0.1",
         lifespan=lifespan
     )
+    origins = [
+        "http://localhost:3000"
+    ]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     @app.get("/")
     def home():
         return "Welcome Home!"
 
     app.include_router(user.router)
-    app.include_router(images.router)
+    app.include_router(image.router)
+    app.include_router(country.router)
 
     return app
 
