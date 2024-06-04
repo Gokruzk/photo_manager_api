@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Ubication {
-    cod_ubi Int      @id
+    cod_ubi Int      @id @map("cod_ubi")
     country String   @map("country") @db.VarChar(100)
     Images  Images[]
     User    User[]
@@ -18,7 +18,7 @@ model Ubication {
 }
 
 model State {
-    cod_state Int    @id
+    cod_state Int    @id @map("cod_state")
     state     String @map("state") @db.VarChar(8)
     User      User[]
 

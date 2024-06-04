@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path
 from schema import ResponseSchema
-from Routes.images import ImageRoutes
+from Routes.image import ImageRoutes
 from Model.models import Images
 
 router = APIRouter(
