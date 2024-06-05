@@ -47,6 +47,7 @@ class User(BaseModel):
     username: str
     email: str
     password: str
+    birth_date: date
 
 
 class User_Images(BaseModel):

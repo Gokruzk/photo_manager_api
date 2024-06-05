@@ -26,18 +26,19 @@ model State {
 }
 
 model ImgDescription {
-    cod_description Int           @id
-    description     String        @map("description") @db.VarChar(8)
+    cod_description Int          @id
+    description     String       @map("description") @db.VarChar(8)
     User_Dates      User_Dates[]
 
     @@map("img_description")
 }
 
 model Dates {
-    cod_date Int      @id
-    year     Int      @map("year")
-    month    Int      @map("month")
-    day      DateTime @map("day")
+    cod_date   Int          @id
+    year       Int          @map("year")
+    month      Int          @map("month")
+    day        DateTime     @map("day")
+    User_Dates User_Dates[]
 
     @@map("dates")
 }
@@ -52,14 +53,15 @@ model Images {
 }
 
 model User {
-    cod_user  Int       @id @default(autoincrement())
-    cod_ubi   Int
-    cod_state Int
-    username  String    @map("username") @db.VarChar(15)
-    email     String    @map("email") @db.VarChar(50)
-    password  String    @map("password") @db.VarChar(300)
-    ubication Ubication @relation(fields: [cod_ubi], references: [cod_ubi])
-    state     State     @relation(fields: [cod_state], references: [cod_state])
+    cod_user   Int          @id @default(autoincrement())
+    cod_ubi    Int
+    cod_state  Int
+    username   String       @unique @map("username") @db.VarChar(15)
+    email      String       @map("email") @db.VarChar(50)
+    password   String       @map("password") @db.VarChar(300)
+    ubication  Ubication    @relation(fields: [cod_ubi], references: [cod_ubi])
+    state      State        @relation(fields: [cod_state], references: [cod_state])
+    User_Dates User_Dates[]
 
     @@map("user")
 }
@@ -68,6 +70,8 @@ model User_Dates {
     cod_date        Int
     cod_user        Int
     cod_description Int
+    date            Dates          @relation(fields: [cod_date], references: [cod_date])
+    user            User           @relation(fields: [cod_user], references: [cod_user])
     description     ImgDescription @relation(fields: [cod_description], references: [cod_description])
 
     @@id([cod_date, cod_user, cod_description])
@@ -75,9 +79,9 @@ model User_Dates {
 }
 
 model User_Images {
-    cod_image                     Int
-    cod_user                      Int
-    description                   String
+    cod_image   Int
+    cod_user    Int
+    description String
 
     @@id([cod_image, cod_user])
     @@map("user_images")
