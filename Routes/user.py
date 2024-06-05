@@ -76,7 +76,10 @@ class UserRoutes:
 
     @staticmethod
     async def delete(username: str):
-        return await conn.prisma.user.delete(where={"username": username})
+        us = await conn.prisma.user.find_first_or_raise(
+            where={"username": username})
+        await conn.prisma.user_dates.delete_many(where={"cod_user": us.cod_user})
+        await conn.prisma.user.delete(where={"username": username})
 
     @staticmethod
     async def update(user: User, username: str):
