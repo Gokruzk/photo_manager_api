@@ -31,7 +31,7 @@ def signJWT(cod_user: str) -> Dict[str, str]:
 def decodeJWT(token: str) -> dict:
     try:
         decoded = jwt.decode(token, jwtSecret, getenv("ALGORITHM"))
-        return decoded if decoded["expires"] else None
+        return decoded if decoded["exp"] else None
     except jwt.ExpiredSignatureError:
         print("Token expired. Get new one")
         return None

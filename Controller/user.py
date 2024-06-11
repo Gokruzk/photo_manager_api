@@ -16,9 +16,10 @@ async def get_all():
     return ResponseSchema(detail="Successfully retreived", result=data)
 
 
-@router.get("/me", tags=["users"])
+@router.get(path="/me")
 async def read_user_me(token=Depends(JWTBearer())):
-    await UserRoutes.read_user_me(token)
+    user = await UserRoutes.read_user_me(token)
+    return ResponseSchema(detail="Successfully retreived", result=user)
 
 
 @router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
