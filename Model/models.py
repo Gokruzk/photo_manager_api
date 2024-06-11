@@ -60,3 +60,19 @@ class User_Dates(BaseModel):
     cod_date: int
     cod_user: int
     cod_description: int
+
+
+class SignIn(BaseModel):
+    username: str
+    password: str
+
+
+class UserSimple(BaseModel):
+    cod_user: Optional[T] = None
+    username: str
+    email: str
+
+
+class SignOut(BaseModel):
+    token: str
+    user: UserSimple

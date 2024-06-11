@@ -1,8 +1,9 @@
-import os
 from Model.models import User, User_, Images, Dates, User_Dates, User_Images
 from Config.db import conn
+from fastapi import Depends
 from datetime import datetime
 from pathlib import Path
+from Utils.auth import decodeJWT, JWTBearer
 
 # images path
 home = Path.home()
@@ -103,3 +104,11 @@ class UserRoutes:
             "cod_user": us.cod_user,
             "cod_description": 2
         }, where={"cod_user": us.cod_user, "cod_description": 2})
+
+    @staticmethod
+    async def read_user_me(token):
+        decoded = decodeJWT(token)
+        if "cod_user" in decoded:
+            cod_user = decoded["cod_user"]
+            return await conn.prisma.user.find_unique(where={"cod_user": cod_user})
+        return None

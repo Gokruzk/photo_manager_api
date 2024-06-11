@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from Config.db import conn
-from Controller import country, image, user
+from Controller import country, image, user, auth
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -38,6 +38,7 @@ def init_app():
     app.include_router(user.router)
     app.include_router(image.router)
     app.include_router(country.router)
+    app.include_router(auth.router)
 
     return app
 
