@@ -1,8 +1,6 @@
 from fastapi import APIRouter
-from schema import ResponseSchema
 from Routes.user import UserRoutes
 from Model.models import SignOut, SignIn
-from fastapi.security import OAuth2PasswordBearer
 from Utils.auth import signJWT, validatePassword
 
 router = APIRouter(
