@@ -73,7 +73,10 @@ class UserRoutes:
 
     @staticmethod
     async def get_by_nick(username: str) -> User:
-        return await conn.prisma.user.find_first_or_raise(where={"username": username})
+        try:
+            return await conn.prisma.user.find_first_or_raise(where={"username": username})
+        except:
+            return False
 
     @staticmethod
     async def delete(username: str):
