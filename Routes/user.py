@@ -95,7 +95,6 @@ class UserRoutes:
         updated_date = int(formatted_date)
 
         await conn.prisma.user.update(data={
-            "cod_ubi": user.cod_ubi,
             "cod_state": user.cod_state,
             "username": user.username,
             "email": user.email,
@@ -104,9 +103,14 @@ class UserRoutes:
 
         await conn.prisma.user_dates.update_many(data={
             "cod_date": updated_date,
-            "cod_user": us.cod_user,
-            "cod_description": 2
         }, where={"cod_user": us.cod_user, "cod_description": 2})
+
+        formatted_date = user.birth_date.strftime('%Y%m%d')
+        birthday = int(formatted_date)
+
+        await conn.prisma.user_dates.update_many(data={
+            "cod_date": birthday
+        }, where={"cod_user": us.cod_user, "cod_description": 3})
 
     @staticmethod
     async def read_user_me(token):
