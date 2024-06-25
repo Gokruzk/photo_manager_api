@@ -47,9 +47,10 @@ async def create_user(data: User_):
             del user_retrieved.User_Dates
             del user_retrieved.cod_ubi
             del user_retrieved.cod_state
+            del user_retrieved.cod_user
 
             user_retrieved = dict(user_retrieved)
-            token = signJWT(user_retrieved['cod_user'])
+            token = signJWT(user_retrieved['username'])
             sign_out = SignOut(token=token, user=user_retrieved)
         else:
             raise Exception

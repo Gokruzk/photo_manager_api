@@ -18,12 +18,12 @@ def validatePassword(password: str, encrypted: str) -> str:
     return bcrypt.checkpw(password.encode("utf-8"), encrypted.encode("utf-8"))
 
 
-def signJWT(cod_user: str) -> Dict[str, str]:
+def signJWT(username: str) -> Dict[str, str]:
     EXPIRES = datetime.now(tz=timezone.utc) + timedelta(days=30)
 
     payload = {
         "exp": EXPIRES,
-        "cod_user": cod_user,
+        "username": username,
     }
     token = jwt.encode(payload, secret, algorithm)
     return token
