@@ -25,12 +25,12 @@ model State {
     @@map("state")
 }
 
-model ImgDescription {
+model Descriptions {
     cod_description Int          @id
     description     String       @map("description") @db.VarChar(8)
     User_Dates      User_Dates[]
 
-    @@map("img_description")
+    @@map("descriptions")
 }
 
 model Dates {
@@ -70,9 +70,9 @@ model User_Dates {
     cod_date        Int
     cod_user        Int
     cod_description Int
-    date            Dates          @relation(fields: [cod_date], references: [cod_date])
-    user            User           @relation(fields: [cod_user], references: [cod_user])
-    description     ImgDescription @relation(fields: [cod_description], references: [cod_description])
+    date            Dates        @relation(fields: [cod_date], references: [cod_date])
+    user            User         @relation(fields: [cod_user], references: [cod_user])
+    description     Descriptions @relation(fields: [cod_description], references: [cod_description])
 
     @@id([cod_date, cod_user, cod_description])
     @@map("user_dates")

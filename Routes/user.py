@@ -14,7 +14,14 @@ class UserRoutes:
 
     @staticmethod
     async def get_all() -> list[User]:
-        return await conn.prisma.user.find_many()
+        return await conn.prisma.user.find_many(
+            include={
+                "User_Dates": {
+                    "include": {"description": True}
+                },
+                "ubication": True
+            }
+        )
 
     @staticmethod
     async def create(data: User_):
@@ -74,7 +81,12 @@ class UserRoutes:
     @staticmethod
     async def get_by_nick(username: str) -> User:
         try:
-            return await conn.prisma.user.find_first_or_raise(where={"username": username})
+            return await conn.prisma.user.find_first_or_raise(include={
+                "User_Dates": {
+                    "include": {"description": True}
+                },
+                "ubication": True
+            }, where={"username": username})
         except:
             return False
 
@@ -95,6 +107,7 @@ class UserRoutes:
         updated_date = int(formatted_date)
 
         await conn.prisma.user.update(data={
+            "cod_ubi": user.cod_ubi,
             "cod_state": user.cod_state,
             "username": user.username,
             "email": user.email,
