@@ -30,7 +30,7 @@ def init_app():
 
     @app.get("/")
     def home():
-        return "Welcome Home!"
+        return "Photo manager API!"
 
     app.include_router(user.router)
     app.include_router(image.router)
