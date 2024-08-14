@@ -25,7 +25,8 @@ class Dates(BaseModel):
 class Images(BaseModel):
     cod_image: Optional[T] = None
     cod_ubi: int
-    image: bytes
+    image: str
+    uploadedat: int
 
 
 class User_(BaseModel):
@@ -76,3 +77,7 @@ class UserSimple(BaseModel):
 class SignOut(BaseModel):
     token: str
     user: UserSimple
+
+class UserImagesD(BaseModel):
+    cod_user: int
+    cod_image: int
