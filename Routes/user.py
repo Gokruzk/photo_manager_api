@@ -1,6 +1,5 @@
-from Model.models import User, User_, Images, Dates, User_Dates, User_Images
+from Model.models import User, User_
 from Config.db import conn
-from fastapi import Depends
 from datetime import datetime
 from pathlib import Path
 from Utils.auth import decodeJWT, JWTBearer
@@ -26,11 +25,6 @@ class UserRoutes:
     @staticmethod
     async def create(data: User_):
 
-        # folder to store images
-        # if not images_folder.exists():
-        #     os.mkdir(images_folder)
-        # os.chdir(images_folder)
-
         user_post = await conn.prisma.user.create({
             "cod_ubi": data.cod_ubi,
             "cod_state": data.cod_state,
@@ -41,22 +35,6 @@ class UserRoutes:
 
         us = await conn.prisma.user.find_first_or_raise(
             where={"username": data.username})
-
-        # data.image must be encoded in base64 in frontend then
-        # decode and rename image to store in directory
-        # if data.image != None:
-        # user profile picture
-        # image_post = await conn.prisma.images.create({
-        #     "cod_ubi": data.cod_ubi,
-        #     "image": base64_string
-        # })
-        # img = await conn.prisma.images.find_first_or_raise(where={"image": base64_string})
-        # print(img.cod_image)
-        # user_image = await conn.prisma.user_images.create({
-        #     "cod_image": img.cod_image,
-        #     "cod_user": us.cod_user,
-        #     "description": data.image_description
-        # })
 
         formatted_date = data.birth_date.strftime('%Y%m%d')
         birthday = int(formatted_date)
@@ -95,6 +73,7 @@ class UserRoutes:
         us = await conn.prisma.user.find_first_or_raise(
             where={"username": username})
         await conn.prisma.user_dates.delete_many(where={"cod_user": us.cod_user})
+        await conn.prisma.user_images.delete_many(where={"cod_user": us.cod_user})
         await conn.prisma.user.delete(where={"username": username})
 
     @staticmethod
