@@ -23,6 +23,7 @@ create table images (
    cod_image            SERIAL               not null,
    cod_ubi              INT4                 not null,
    "image"              VARCHAR(300)         not null,
+   uploadedat           Int                  not null,
    constraint PK_IMAGES primary key (cod_image)
 );
 
@@ -41,28 +42,10 @@ cod_ubi
 );
 
 /*==============================================================*/
-/* Table: images_dates                                          */
+/* Index: images_dates_fk                                   */
 /*==============================================================*/
-create table images_dates (
-   cod_date             INT4                 not null,
-   cod_image            INT4                 not null,
-   "description"        VARCHAR(11)          not null,
-   constraint PK_IMAGES_DATES primary key (cod_date, cod_image)
-);
-
-/*==============================================================*/
-/* Index: images_dates_pk                                       */
-/*==============================================================*/
-create unique index images_dates_pk on images_dates (
-cod_date,
-cod_image
-);
-
-/*==============================================================*/
-/* Index: images_dates_fk                                       */
-/*==============================================================*/
-create  index images_dates_fk on images_dates (
-cod_image
+create  index images_dates_fk on images (
+uploadedat
 );
 
 /*==============================================================*/
@@ -197,13 +180,8 @@ alter table images
       references ubication (cod_ubi)
       on delete restrict on update restrict;
 
-alter table images_dates
-   add constraint FK_IMAGES_D_RELATIONS_IMAGES foreign key (cod_image)
-      references images (cod_image)
-      on delete restrict on update restrict;
-
-alter table images_dates
-   add constraint FK_IMAGES_D_RELATIONS_DATES foreign key (cod_date)
+alter table images
+   add constraint FK_IMAGES_IMAGES_DATES foreign key (uploadedat)
       references dates (cod_date)
       on delete restrict on update restrict;
 
