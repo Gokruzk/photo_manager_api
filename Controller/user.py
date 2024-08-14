@@ -88,10 +88,18 @@ async def delete_user(username: str = Path(..., alias="username")):
 @router.put(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def update_user(user: User, username: str = Path(..., alias="username")):
     try:
-        user.password = encryptPassword(user.password)
-        await UserRoutes.update(user, username)
+        print(user)
+        user_retrieved = await UserRoutes.get_by_nick(user.username)
+        print(user_retrieved)
+        if user_retrieved is False:
+            user.password = encryptPassword(user.password)
+            await UserRoutes.update(user, username)
+        elif user_retrieved.cod_user == user.cod_user:
+            user.password = encryptPassword(user.password)
+            await UserRoutes.update(user, username)
+        else:
+            raise Exception
     except Exception as e:
-        print(e)
-        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="Error updating user")
+        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="The username already exist")
     else:
         return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully updated")
