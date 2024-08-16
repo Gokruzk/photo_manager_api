@@ -3,6 +3,7 @@ from Model.models import User_Images
 from datetime import datetime
 from Config.db import conn
 from pathlib import Path
+import os
 
 # directory for images
 home = Path.home()
@@ -13,6 +14,7 @@ class ImageRoutes:
 
     @staticmethod
     async def create(username: str, file: UploadFile = File(...)):
+        # get user data
         us = await conn.prisma.user.find_first_or_raise(
             where={"username": username})
 
@@ -46,7 +48,10 @@ class ImageRoutes:
 
     @staticmethod
     async def get_all(username: str) -> list[User_Images]:
+        # get user data
         us = await conn.prisma.user.find_first_or_raise(where={"username": username})
+
+        # get user's images 
         return await conn.prisma.user_images.find_many(where={
             "cod_user": us.cod_user
         }, include={
@@ -60,8 +65,15 @@ class ImageRoutes:
     @staticmethod
     async def delete(cod_image: int, cod_user: int):
         try:
+            # get image data
+            img = await conn.prisma.images.find_first_or_raise(where={
+                "cod_image": cod_image
+            })
+            # remove image from directory
+            os.remove(img.image)
+
+            # remove database records
             await conn.prisma.user_images.delete(where={"cod_image_cod_user": {"cod_image": cod_image, "cod_user": cod_user}})
             await conn.prisma.images.delete(where={"cod_image": cod_image})
         except Exception as e:
             print(e)
-        # if (userimage_delete):
