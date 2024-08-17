@@ -1,10 +1,10 @@
-import os
-from pathlib import Path as pt
-from fastapi import APIRouter, Path, File, UploadFile
-from schema import ResponseSchema
+from fastapi import APIRouter, Path, File, UploadFile, status, Response
 from Routes.image import ImageRoutes
 from Model.models import UserImagesD
+from schema import ResponseSchema
+from pathlib import Path as pt
 import uuid
+import os
 
 router = APIRouter(
     prefix="/images",
@@ -16,13 +16,18 @@ home = pt.home()
 images_folder = pt(home, "Images_Photo_Manager")
 if not images_folder.exists():
     os.mkdir(images_folder)
-os.chdir(images_folder)
 
 
 @router.get(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_all(username: str = Path(..., alias="username")):
-    data = await ImageRoutes.get_all(username)
-    return ResponseSchema(status_code=200, detail="Successfully retreived", result=data)
+    try:
+        data = await ImageRoutes.get_all(username)
+        if data is not False:
+            return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
+        else:
+            raise Exception("Error retreiving images")
+    except Exception as e:
+        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_404_NOT_FOUND, media_type="application/json")
 
 
 @router.post(path="", response_model_exclude_none=True)
@@ -31,13 +36,29 @@ async def upload_image(username: str, file: UploadFile = File(...)):
     file.filename = f"{uuid.uuid4()}.jpg"
     # send data
     await ImageRoutes.create(username, file)
-    return {"filename": file.filename}
+    return Response(ResponseSchema(detail="Successfully uploaded", result=file.filename).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
 
 
 @router.delete(path="", response_model=ResponseSchema, response_model_exclude_none=True)
 async def delete_image(data: UserImagesD):
     try:
-        await ImageRoutes.delete(data.cod_image, data.cod_user)
-        return ResponseSchema(status_code=200, detail="Successfully deleted")
+        img = await ImageRoutes.get_by_code(data.cod_image)
+        if img is not False:
+            await ImageRoutes.delete(data.cod_image, data.cod_user)
+        else:
+            raise Exception("Image does not exist")
     except Exception as e:
-        return ResponseSchema(status_code=400, detail=e)
+        print(e)
+        return Response(
+            ResponseSchema(
+                detail=str(e)).model_dump_json(),
+            status_code=status.HTTP_404_NOT_FOUND,
+            media_type="application/json"
+        )
+    else:
+        return Response(
+            ResponseSchema(
+                detail="Successfully deleted").model_dump_json(),
+            status_code=status.HTTP_204_NO_CONTENT,
+            media_type="application/json"
+        )

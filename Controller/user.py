@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Path, Depends, status, HTTPException
-from schema import ResponseSchema
-from Routes.user import UserRoutes
-from Model.models import User, User_
+from fastapi import APIRouter, Path, Depends, status, Response
 from Utils.auth import JWTBearer, encryptPassword, signJWT
+from Model.models import User, User_
+from Routes.user import UserRoutes
+from schema import ResponseSchema
 from Model.models import SignOut
 
 router = APIRouter(
@@ -17,9 +17,9 @@ async def get_all():
         data = await UserRoutes.get_all()
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="Error retreiving data", result=data)
+        return Response(content=ResponseSchema(detail="Error retreiving data", result=data).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully retreived", result=data)
+        return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
 @router.get(path="/me")
@@ -28,9 +28,9 @@ async def read_user_me(token=Depends(JWTBearer())):
         user = await UserRoutes.read_user_me(token)
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="Token error", result=user)
+        return Response(ResponseSchema(detail="Token error", result=user).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST,)
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully retreived", result=user)
+        return Response(ResponseSchema(detail="Successfully retreived", result=user).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
 @router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
@@ -53,12 +53,12 @@ async def create_user(data: User_):
             token = signJWT(user_retrieved['username'])
             sign_out = SignOut(token=token, user=user_retrieved)
         else:
-            raise Exception
+            raise Exception("The user already existe")
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="The user already exist")
+        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_201_CREATED, detail="Successfully created", result=sign_out)
+        return Response(ResponseSchema(detail="Successfully created", result=sign_out).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
 
 
 @router.get(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
@@ -69,28 +69,30 @@ async def get_by_nick(username: str = Path(..., alias="username")):
             raise Exception
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_204_NO_CONTENT, detail="The user does not exist")
+        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_404_NOT_FOUND, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully retreived", result=data)
+        return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
 @router.delete(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def delete_user(username: str = Path(..., alias="username")):
     try:
-        await UserRoutes.delete(username)
+        us = await UserRoutes.get_by_nick(username)
+        if us:
+            await UserRoutes.delete(username)
+        else:
+            raise Exception("The user does not exist")
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_204_NO_CONTENT, detail="The user does not exist")
+        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_404_NOT_FOUND, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully deleted")
+        return Response(ResponseSchema(detail="Successfully deleted").model_dump_json(), status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
 
 
 @router.put(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def update_user(user: User, username: str = Path(..., alias="username")):
     try:
-        print(user)
         user_retrieved = await UserRoutes.get_by_nick(user.username)
-        print(user_retrieved)
         if user_retrieved is False:
             user.password = encryptPassword(user.password)
             await UserRoutes.update(user, username)
@@ -100,6 +102,6 @@ async def update_user(user: User, username: str = Path(..., alias="username")):
         else:
             raise Exception
     except Exception as e:
-        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="The username already exist")
+        return Response(ResponseSchema(detail=f"The username already exist, {str(e)}").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully updated")
+        return Response(ResponseSchema(detail="Successfully updated").model_dump_json(), status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
