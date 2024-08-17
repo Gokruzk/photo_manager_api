@@ -27,6 +27,8 @@ class Images(BaseModel):
     cod_ubi: int
     image: str
     uploadedat: int
+    ubication: Ubication
+    uploaded: Dates
 
 
 class User_(BaseModel):
@@ -50,11 +52,11 @@ class User(BaseModel):
     password: str
     birth_date: date
 
-
 class User_Images(BaseModel):
     cod_image: int
     cod_user: int
     description: Optional[T] = None
+    images: Images
 
 
 class User_Dates(BaseModel):
