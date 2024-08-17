@@ -1,6 +1,6 @@
-from datetime import date
-from pydantic import BaseModel
 from typing import Optional, TypeVar
+from pydantic import BaseModel
+from datetime import date
 
 T = TypeVar("T")
 
@@ -20,6 +20,11 @@ class Dates(BaseModel):
     year: int
     month: int
     day: date
+
+
+class Description(BaseModel):
+    cod_description: int
+    description: str
 
 
 class Images(BaseModel):
@@ -52,17 +57,24 @@ class User(BaseModel):
     password: str
     birth_date: date
 
-class User_Images(BaseModel):
-    cod_image: int
-    cod_user: int
-    description: Optional[T] = None
-    images: Images
-
 
 class User_Dates(BaseModel):
     cod_date: int
     cod_user: int
     cod_description: int
+    description: Description
+
+
+class User_Retrieve(User):
+    ubication: Ubication
+    User_Dates: list[User_Dates]
+
+
+class User_Images(BaseModel):
+    cod_image: int
+    cod_user: int
+    description: Optional[T] = None
+    images: Images
 
 
 class SignIn(BaseModel):
@@ -79,6 +91,7 @@ class UserSimple(BaseModel):
 class SignOut(BaseModel):
     token: str
     user: UserSimple
+
 
 class UserImagesD(BaseModel):
     cod_user: int

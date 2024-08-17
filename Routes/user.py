@@ -1,8 +1,8 @@
-from Model.models import User, User_
-from Config.db import conn
+from Model.models import User, User_, User_Retrieve
+from Utils.auth import decodeJWT
 from datetime import datetime
+from Config.db import conn
 from pathlib import Path
-from Utils.auth import decodeJWT, JWTBearer
 
 # images path
 home = Path.home()
@@ -62,14 +62,28 @@ class UserRoutes:
             return False
 
     @staticmethod
-    async def get_by_nick(username: str) -> User:
+    async def get_by_nick(username: str) -> User_Retrieve:
         try:
-            return await conn.prisma.user.find_first_or_raise(include={
+            # retrieve user
+            user: User_Retrieve = await conn.prisma.user.find_first_or_raise(include={
                 "User_Dates": {
                     "include": {"description": True}
                 },
                 "ubication": True
             }, where={"username": username})
+
+            # clean null data from schema.prisma
+            del user.User_Images
+            del user.ubication.Images
+            del user.ubication.User
+            del user.state
+            for user_date in user.User_Dates:
+                del user_date.user
+                del user_date.date
+                del user_date.description.User_Dates
+                
+            # return user
+            return user
         except:
             return False
 
