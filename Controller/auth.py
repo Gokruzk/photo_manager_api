@@ -19,12 +19,6 @@ async def auth_user(user: SignIn):
                 user.password, user_retrieved.password)
             if validated:
                 del user_retrieved.password
-                del user_retrieved.state
-                del user_retrieved.ubication
-                del user_retrieved.User_Dates
-                del user_retrieved.cod_ubi
-                del user_retrieved.cod_state
-
                 user_retrieved = dict(user_retrieved)
                 token = signJWT(user_retrieved['username'])
                 sign_out = SignOut(token=token, user=user_retrieved)
