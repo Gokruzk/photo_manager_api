@@ -12,16 +12,29 @@ images_folder = Path(home, "DB_IMAGES")
 class UserRoutes:
 
     @staticmethod
-    async def get_all() -> list[User]:
+    async def get_all() -> list[User_Retrieve]:
         try:
-            return await conn.prisma.user.find_many(
+            users = await conn.prisma.user.find_many(
                 include={
                     "User_Dates": {
                         "include": {"description": True}
                     },
                     "ubication": True
-                }
-            )
+                })
+            
+            # clean null data from schema.prisma
+            for user in users:
+                del user.User_Images
+                del user.ubication.Images
+                del user.ubication.User
+                del user.state
+                for user_date in user.User_Dates:
+                    del user_date.user
+                    del user_date.date
+                    del user_date.description.User_Dates
+
+            # return user
+            return users
         except:
             return False
 
@@ -81,7 +94,7 @@ class UserRoutes:
                 del user_date.user
                 del user_date.date
                 del user_date.description.User_Dates
-                
+
             # return user
             return user
         except:
