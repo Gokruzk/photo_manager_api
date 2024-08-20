@@ -36,18 +36,6 @@ class Images(BaseModel):
     uploaded: Dates
 
 
-class User_(BaseModel):
-    cod_user: Optional[T] = None
-    cod_ubi: int
-    cod_state: int
-    username: str
-    email: str
-    password: str
-    birth_date: date
-    image: Optional[T] = None
-    image_description: Optional[T] = None
-
-
 class User(BaseModel):
     cod_user: Optional[T] = None
     cod_ubi: int
@@ -55,7 +43,7 @@ class User(BaseModel):
     username: str
     email: str
     password: str
-    birth_date: date
+    birthdate: date
 
 
 class User_Dates(BaseModel):

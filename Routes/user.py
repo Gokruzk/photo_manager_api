@@ -1,4 +1,4 @@
-from Model.models import User, User_, User_Retrieve
+from Model.models import User, User, User_Retrieve
 from Utils.auth import decodeJWT
 from datetime import datetime
 from Config.db import conn
@@ -21,7 +21,7 @@ class UserRoutes:
                     },
                     "ubication": True
                 })
-            
+
             # clean null data from schema.prisma
             for user in users:
                 del user.User_Images
@@ -39,7 +39,7 @@ class UserRoutes:
             return False
 
     @staticmethod
-    async def create(data: User_):
+    async def create(data: User):
         try:
             user_post = await conn.prisma.user.create({
                 "cod_ubi": data.cod_ubi,
@@ -52,7 +52,7 @@ class UserRoutes:
             us = await conn.prisma.user.find_first_or_raise(
                 where={"username": data.username})
 
-            formatted_date = data.birth_date.strftime('%Y%m%d')
+            formatted_date = data.birthdate.strftime('%Y%m%d')
             birthday = int(formatted_date)
             formatted_date = datetime.now().strftime('%Y%m%d')
             created_date = int(formatted_date)
@@ -132,7 +132,7 @@ class UserRoutes:
                 "cod_date": updated_date,
             }, where={"cod_user": us.cod_user, "cod_description": 2})
 
-            formatted_date = user.birth_date.strftime('%Y%m%d')
+            formatted_date = user.birthdate.strftime('%Y%m%d')
             birthday = int(formatted_date)
 
             await conn.prisma.user_dates.update_many(data={

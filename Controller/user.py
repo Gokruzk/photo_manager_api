@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path, Depends, status, Response
 from Utils.auth import JWTBearer, encryptPassword, signJWT
-from Model.models import User, User_
+from Model.models import User, User
 from Routes.user import UserRoutes
 from schema import ResponseSchema
 from Model.models import SignOut
@@ -34,7 +34,7 @@ async def read_user_me(token=Depends(JWTBearer())):
 
 
 @router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
-async def create_user(data: User_):
+async def create_user(data: User):
     try:
         data.password = encryptPassword(data.password)
         user_retrieved = await UserRoutes.get_by_nick(data.username)
@@ -78,7 +78,7 @@ async def delete_user(username: str = Path(..., alias="username")):
         print(e)
         return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_404_NOT_FOUND, media_type="application/json")
     else:
-        return Response(ResponseSchema(detail="Successfully deleted").model_dump_json(), status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
+        return Response(status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
 
 
 @router.put(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
@@ -96,4 +96,4 @@ async def update_user(user: User, username: str = Path(..., alias="username")):
     except Exception as e:
         return Response(ResponseSchema(detail=f"The username already exist, {str(e)}").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
-        return Response(ResponseSchema(detail="Successfully updated").model_dump_json(), status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
+        return Response(status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
