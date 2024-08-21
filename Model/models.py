@@ -65,6 +65,11 @@ class User_Images(BaseModel):
     images: Images
 
 
+class UserImagesD(BaseModel):
+    cod_user: int
+    cod_image: int
+
+
 class SignIn(BaseModel):
     username: str
     password: str
@@ -79,8 +84,3 @@ class UserSimple(BaseModel):
 class SignOut(BaseModel):
     token: str
     user: UserSimple
-
-
-class UserImagesD(BaseModel):
-    cod_user: int
-    cod_image: int

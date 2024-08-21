@@ -1,10 +1,14 @@
-import uvicorn
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from Config.db import conn
-from Controller import country, image, user, auth
 from fastapi.middleware.cors import CORSMiddleware
+from Controller import country, image, user, auth
+from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from Config.db import conn
+from pathlib import Path
+import uvicorn
 
+home = Path.home()
+images_folder = Path(home, "Images_Photo_Manager")
 
 def init_app():
     @asynccontextmanager
@@ -36,6 +40,8 @@ def init_app():
     app.include_router(image.router)
     app.include_router(country.router)
     app.include_router(auth.router)
+    # mount directory
+    app.mount("/images/image", StaticFiles(directory=images_folder), name="images")
 
     return app
 

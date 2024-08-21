@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, File, UploadFile, status, Response
+from fastapi import APIRouter, Path, File, UploadFile, status, Response, Form
 from Routes.image import ImageRoutes
 from Model.models import UserImagesD
 from schema import ResponseSchema
@@ -31,12 +31,16 @@ async def get_all(username: str = Path(..., alias="username")):
 
 
 @router.post(path="", response_model_exclude_none=True)
-async def upload_image(username: str, file: UploadFile = File(...)):
-    # rename image
-    file.filename = f"{uuid.uuid4()}.jpg"
-    # send data
-    await ImageRoutes.create(username, file)
-    return Response(ResponseSchema(detail="Successfully uploaded", result=file.filename).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
+async def upload_image(username: str = Form(...), file: UploadFile = File(...)):
+    try:
+        # rename image
+        file.filename = f"{uuid.uuid4()}.jpg"
+        # send data
+        await ImageRoutes.create(username, file)
+        return Response(ResponseSchema(detail="Successfully uploaded", result=file.filename).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
+    except Exception as e:
+        print(e)
+        return Response(ResponseSchema(detail="Error uploading image").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
 
 
 @router.delete(path="", response_model=ResponseSchema, response_model_exclude_none=True)
@@ -57,8 +61,6 @@ async def delete_image(data: UserImagesD):
         )
     else:
         return Response(
-            ResponseSchema(
-                detail="Successfully deleted").model_dump_json(),
             status_code=status.HTTP_204_NO_CONTENT,
             media_type="application/json"
         )

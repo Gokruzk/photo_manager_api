@@ -46,7 +46,7 @@ class ImageRoutes:
                 "cod_user": us.cod_user,
                 "description": "New image"
             })
-        except:
+        except Exception as e:
             return False
 
     @staticmethod
@@ -56,7 +56,7 @@ class ImageRoutes:
             us = await conn.prisma.user.find_first_or_raise(where={"username": username})
 
             # get user's images
-            return await conn.prisma.user_images.find_many(where={
+            images: list[User_Images] = await conn.prisma.user_images.find_many(where={
                 "cod_user": us.cod_user
             }, include={
                 "images": {
@@ -65,6 +65,17 @@ class ImageRoutes:
                         "uploaded": True}
                 }
             })
+            for image in images:
+                # return the image's name (the directory was mounted)
+                image.images.image = Path(image.images.image).name
+                # clean null data from schema.prisma
+                del image.images.ubication.Images
+                del image.images.ubication.User
+                del image.images.User_Images
+                del image.images.uploaded.User_Dates
+                del image.images.uploaded.Images
+                del image.user
+            return images
         except:
             return False
 
