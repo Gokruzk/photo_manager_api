@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Path, Depends, status, Response
 from Utils.auth import JWTBearer, encryptPassword, signJWT
-from Model.models import User, User
+from Model.models import User, User, SignToken
 from Routes.user import UserRoutes
 from schema import ResponseSchema
-from Model.models import SignOut
 
 router = APIRouter(
     prefix="/user",
@@ -14,6 +13,7 @@ router = APIRouter(
 @router.get(path="", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_all():
     try:
+        # get all users
         data = await UserRoutes.get_all()
     except Exception as e:
         print(e)
@@ -25,10 +25,11 @@ async def get_all():
 @router.get(path="/me")
 async def read_user_me(token=Depends(JWTBearer())):
     try:
+
         user = await UserRoutes.read_user_me(token)
     except Exception as e:
         print(e)
-        return Response(ResponseSchema(detail="Token error", result=user).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST,media_type="application/json")
+        return Response(ResponseSchema(detail="Token error", result=user).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
         return Response(ResponseSchema(detail="Successfully retreived", result=user).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
@@ -36,14 +37,18 @@ async def read_user_me(token=Depends(JWTBearer())):
 @router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
 async def create_user(data: User):
     try:
+        # encrypt password
         data.password = encryptPassword(data.password)
+        # check if user does not exist
         user_retrieved = await UserRoutes.get_by_nick(data.username)
         if user_retrieved is False:
+            # create user
             await UserRoutes.create(data)
             user_retrieved = await UserRoutes.get_by_nick(data.username)
             user_retrieved = dict(user_retrieved)
+            # generate token
             token = signJWT(user_retrieved['username'])
-            sign_out = SignOut(token=token, user=user_retrieved)
+            sign_out = SignToken(token=token, user=user_retrieved)
         else:
             raise Exception("The user already existe")
     except Exception as e:
@@ -56,6 +61,7 @@ async def create_user(data: User):
 @router.get(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_by_nick(username: str = Path(..., alias="username")):
     try:
+        # get user by username
         data = await UserRoutes.get_by_nick(username)
         if not data:
             raise Exception
@@ -69,7 +75,9 @@ async def get_by_nick(username: str = Path(..., alias="username")):
 @router.delete(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def delete_user(username: str = Path(..., alias="username")):
     try:
+        # get user by username
         us = await UserRoutes.get_by_nick(username)
+        # delete if exist
         if us:
             await UserRoutes.delete(username)
         else:
@@ -84,12 +92,20 @@ async def delete_user(username: str = Path(..., alias="username")):
 @router.put(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def update_user(user: User, username: str = Path(..., alias="username")):
     try:
+        # get user by username to check if the username exist
         user_retrieved = await UserRoutes.get_by_nick(user.username)
+        # if username does not exist
         if user_retrieved is False:
+            # encrypt password
             user.password = encryptPassword(user.password)
+            # update user
             await UserRoutes.update(user, username)
+            print("Hola")
+        # if username exist, check the cod_user
         elif user_retrieved.cod_user == user.cod_user:
+            # encrypt password
             user.password = encryptPassword(user.password)
+            # update user
             await UserRoutes.update(user, username)
         else:
             raise Exception

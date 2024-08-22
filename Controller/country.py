@@ -11,6 +11,7 @@ router = APIRouter(
 @router.get(path="", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_all():
     try:
+        # get countries
         data = await CountriesRoutes.get_all()
     except Exception as e:
         print(e)
@@ -22,6 +23,7 @@ async def get_all():
 @router.get(path="/{id}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_by_id(id: str = Path(..., alias="id")):
     try:
+        # get country by id
         data = await CountriesRoutes.get_by_id(int(id))
         ld = dict(data)
         if "cod_ubi" not in ld:

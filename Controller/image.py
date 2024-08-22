@@ -21,6 +21,7 @@ if not images_folder.exists():
 @router.get(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_all(username: str = Path(..., alias="username")):
     try:
+        # get all user's images
         data = await ImageRoutes.get_all(username)
         if data is not False:
             return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
@@ -49,7 +50,9 @@ async def upload_image(username: str = Form(...), file: UploadFile = File(...)):
 @router.delete(path="", response_model=ResponseSchema, response_model_exclude_none=True)
 async def delete_image(data: UserImagesD):
     try:
-        img = await ImageRoutes.get_by_code(data.cod_image)
+        # get image by 
+        img = await ImageRoutes.get_by_id(data.cod_image)
+        # if image exist
         if img is not False:
             await ImageRoutes.delete(data.cod_image, data.cod_user)
         else:

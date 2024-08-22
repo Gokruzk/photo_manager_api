@@ -81,6 +81,6 @@ class UserSimple(BaseModel):
     email: str
 
 
-class SignOut(BaseModel):
+class SignToken(BaseModel):
     token: str
     user: UserSimple

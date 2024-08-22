@@ -80,7 +80,7 @@ class ImageRoutes:
             return False
 
     @staticmethod
-    async def get_by_code(cod_image: int) -> list[User_Images]:
+    async def get_by_id(cod_image: int) -> list[User_Images]:
         try:
             # get image
             return await conn.prisma.images.find_first_or_raise(where={"cod_image": cod_image})

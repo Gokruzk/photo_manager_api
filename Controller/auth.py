@@ -1,7 +1,7 @@
-from fastapi import APIRouter, status, HTTPException
-from Routes.user import UserRoutes
-from Model.models import SignOut, SignIn
 from Utils.auth import signJWT, validatePassword
+from Model.models import SignToken, SignIn
+from fastapi import APIRouter, status
+from Routes.user import UserRoutes
 from schema import ResponseSchema
 
 router = APIRouter(
@@ -13,15 +13,18 @@ router = APIRouter(
 @router.post(path='/signin')
 async def auth_user(user: SignIn):
     try:
+        # check if user exist
         user_retrieved = await UserRoutes.get_by_nick(user.username)
         if user_retrieved:
+            # valide password
             validated = validatePassword(
                 user.password, user_retrieved.password)
             if validated:
                 del user_retrieved.password
                 user_retrieved = dict(user_retrieved)
+                # generate token
                 token = signJWT(user_retrieved['username'])
-                sign_out = SignOut(token=token, user=user_retrieved)
+                sign_out = SignToken(token=token, user=user_retrieved)
             else:
                 raise Exception
         else:
