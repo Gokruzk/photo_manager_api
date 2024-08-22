@@ -33,8 +33,11 @@ async def get_all(username: str = Path(..., alias="username")):
 @router.post(path="", response_model_exclude_none=True)
 async def upload_image(username: str = Form(...), file: UploadFile = File(...)):
     try:
+        # get file type
+        file_type = file.content_type.split('/')[-1]
         # rename image
-        file.filename = f"{uuid.uuid4()}.jpg"
+        new_filename = f"{uuid.uuid4()}.{file_type}"
+        file.filename = new_filename
         # send data
         await ImageRoutes.create(username, file)
         return Response(ResponseSchema(detail="Successfully uploaded", result=file.filename).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
