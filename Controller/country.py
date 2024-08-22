@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Path, status
-from schema import ResponseSchema
+from fastapi import APIRouter, Path, status, Response
 from Routes.country import CountriesRoutes
+from schema import ResponseSchema
 
 router = APIRouter(
     prefix="/country",
@@ -14,9 +14,9 @@ async def get_all():
         data = await CountriesRoutes.get_all()
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="Error retreiving data")
+        return Response(ResponseSchema(detail="Error retreiving data").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully retreived", result=data)
+        return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
 @router.get(path="/{id}", response_model=ResponseSchema, response_model_exclude_none=True)
@@ -28,6 +28,6 @@ async def get_by_id(id: str = Path(..., alias="id")):
             raise Exception
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_400_BAD_REQUEST, detail="The country does not exist")
+        return Response(ResponseSchema(detail="The country does not exist").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully retreived", result=data)
+        return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")

@@ -28,7 +28,7 @@ async def read_user_me(token=Depends(JWTBearer())):
         user = await UserRoutes.read_user_me(token)
     except Exception as e:
         print(e)
-        return Response(ResponseSchema(detail="Token error", result=user).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST,)
+        return Response(ResponseSchema(detail="Token error", result=user).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST,media_type="application/json")
     else:
         return Response(ResponseSchema(detail="Successfully retreived", result=user).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
