@@ -22,18 +22,6 @@ async def get_all():
         return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
-@router.get(path="/me")
-async def read_user_me(token=Depends(JWTBearer())):
-    try:
-
-        user = await UserRoutes.read_user_me(token)
-    except Exception as e:
-        print(e)
-        return Response(ResponseSchema(detail="Token error", result=user).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
-    else:
-        return Response(ResponseSchema(detail="Successfully retreived", result=user).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
-
-
 @router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
 async def create_user(data: User):
     try:
