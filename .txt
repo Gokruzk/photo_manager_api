@@ -11,7 +11,6 @@ june-11-2024: backend JWT
 june-23-2024: add try catchs to routes
 june-23-2024: frontend auth with JWT
 june-23-2024: protect routes frontend
-june-24-2024: modificar serialización
 june-25-2024: front user page
 june-25-2024: front update user data page
 
