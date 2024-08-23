@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Path, Depends, status, Response
 from Utils.auth import JWTBearer, encryptPassword, signJWT
+from fastapi import APIRouter, Path, status, Response
 from Model.models import User, User, SignToken
 from Routes.user import UserRoutes
 from schema import ResponseSchema
