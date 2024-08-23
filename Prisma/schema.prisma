@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Ubication {
-  cod_ubi Int      @id @map("cod_ubi")
+  cod_ubi Int      @id
   country String   @map("country") @db.VarChar(100)
   Images  Images[]
   User    User[]
@@ -18,7 +18,7 @@ model Ubication {
 }
 
 model State {
-  cod_state Int    @id @map("cod_state")
+  cod_state Int    @id
   state     String @map("state") @db.VarChar(8)
   User      User[]
 
@@ -27,7 +27,7 @@ model State {
 
 model Descriptions {
   cod_description Int          @id
-  description     String       @map("description") @db.VarChar(8)
+  description     String       @db.VarChar(8)
   User_Dates      User_Dates[]
 
   @@map("descriptions")
@@ -47,8 +47,8 @@ model Dates {
 model Images {
   cod_image   Int           @id @default(autoincrement())
   cod_ubi     Int
-  image       String        @map("image")
-  uploadedat  Int           @map("uploadedat")
+  image       String
+  uploadedat  Int
   ubication   Ubication     @relation(fields: [cod_ubi], references: [cod_ubi])
   uploaded    Dates         @relation(fields: [uploadedat], references: [cod_date])
   User_Images User_Images[]
@@ -60,7 +60,7 @@ model User {
   cod_user    Int           @id @default(autoincrement())
   cod_ubi     Int
   cod_state   Int
-  username    String        @unique @map("username") @db.VarChar(15)
+  username    String        @unique @db.VarChar(15)
   email       String        @map("email") @db.VarChar(50)
   password    String        @map("password") @db.VarChar(300)
   ubication   Ubication     @relation(fields: [cod_ubi], references: [cod_ubi])
