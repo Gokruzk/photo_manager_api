@@ -1,10 +1,10 @@
-import jwt
-import bcrypt
-from os import getenv
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Request, HTTPException
 from datetime import datetime, timedelta, timezone
 from typing import Dict
-from fastapi import Request, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from os import getenv
+import bcrypt
+import jwt
 
 secret = getenv("SECRET_KEY")
 algorithm = getenv("ALGORITHM")
