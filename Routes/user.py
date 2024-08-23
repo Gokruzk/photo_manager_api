@@ -10,7 +10,6 @@ images_folder = Path(home, "DB_IMAGES")
 
 
 class UserRoutes:
-
     @staticmethod
     async def get_all() -> list[User_Retrieve]:
         try:

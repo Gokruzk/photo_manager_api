@@ -88,7 +88,6 @@ async def update_user(user: User, username: str = Path(..., alias="username")):
             user.password = encryptPassword(user.password)
             # update user
             await UserRoutes.update(user, username)
-            print("Hola")
         # if username exist, check the cod_user
         elif user_retrieved.cod_user == user.cod_user:
             # encrypt password
