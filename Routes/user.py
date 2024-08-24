@@ -143,17 +143,14 @@ class UserRoutes:
             return False
 
     @staticmethod
-    async def delete(username: str):
+    async def delete(user_retrieve: User):
         try:
-            # retrieve user
-            user_retrieve = await conn.prisma.user.find_first_or_raise(
-                where={"username": username})
             # delete dates, images, user
             await conn.prisma.user_dates.delete_many(where={"cod_user": user_retrieve.cod_user})
-            images = await ImageRoutes.get_all(username)
+            images = await ImageRoutes.get_all(user_retrieve.username)
             for image in images:
                 await ImageRoutes.delete(image.cod_image)
-            await conn.prisma.user.delete(where={"username": username})
+            await conn.prisma.user.delete(where={"username": user_retrieve.username})
 
         except:
             return False

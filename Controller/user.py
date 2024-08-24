@@ -90,7 +90,7 @@ async def delete_user(username: str = Path(..., alias="username")):
         user_retrieve = await UserRoutes.get_by_nick(username)
         # delete if exist
         if user_retrieve:
-            await UserRoutes.delete(username)
+            await UserRoutes.delete(user_retrieve)
         else:
             raise Exception("The user does not exist")
     except Exception as e:

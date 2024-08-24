@@ -40,11 +40,12 @@ class ImageRoutes:
             return images
         except:
             return False
-        
+
     @staticmethod
-    async def get_by_id(cod_image):
+    async def get_by_id(cod_image) -> User_Images:
         try:
-            image = conn.prisma.user_images.find_first(where={"cod_image":cod_image})
+            image = conn.prisma.user_images.find_first(
+                where={"cod_image": cod_image})
             return image
         except:
             return False
@@ -87,12 +88,8 @@ class ImageRoutes:
             return False
 
     @staticmethod
-    async def delete(cod_image: int, cod_user: int):
+    async def delete(cod_image: int, cod_user: int, img: User_Images):
         try:
-            # get image data
-            img = await conn.prisma.images.find_first_or_raise(where={
-                "cod_image": cod_image
-            })
             # remove image from directory
             os.remove(img.image)
 

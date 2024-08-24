@@ -1,6 +1,6 @@
 from Utils.auth import signJWT, validatePassword
 from Model.models import SignToken, SignIn
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Response
 from Routes.user import UserRoutes
 from schema import ResponseSchema
 
@@ -31,6 +31,6 @@ async def auth_user(user: SignIn):
             raise Exception
     except Exception as e:
         print(e)
-        return ResponseSchema(status_code=status.HTTP_401_UNAUTHORIZED, detail="Username or password incorrect")
+        return Response(ResponseSchema(detail="Username or password incorrect").model_dump_json(), status_code=status.HTTP_401_UNAUTHORIZED, media_type="application/json")
     else:
-        return ResponseSchema(status_code=status.HTTP_200_OK, detail="Successfully authenticated", result=sign_out)
+        return Response(ResponseSchema(detail="Successfully authenticated", result=sign_out).model_dump_json(),status_code=status.HTTP_200_OK, media_type="application/json")

@@ -54,7 +54,7 @@ async def delete_image(data: UserImagesD):
         img = await ImageRoutes.get_by_id(data.cod_image)
         if img is not False:
             # if image exist delete
-            await ImageRoutes.delete(data.cod_image, data.cod_user)
+            await ImageRoutes.delete(data.cod_image, data.cod_user, img)
         else:
             raise Exception("Image does not exist")
     except Exception as e:
