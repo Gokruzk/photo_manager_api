@@ -40,6 +40,14 @@ class ImageRoutes:
             return images
         except:
             return False
+        
+    @staticmethod
+    async def get_by_id(cod_image):
+        try:
+            image = conn.prisma.user_images.find_first(where={"cod_image":cod_image})
+            return image
+        except:
+            return False
 
     @staticmethod
     async def create(username: str, file: UploadFile = File(...)):

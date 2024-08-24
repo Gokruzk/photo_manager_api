@@ -50,10 +50,10 @@ async def upload_image(username: str = Form(...), file: UploadFile = File(...)):
 @router.delete(path="", response_model=ResponseSchema, response_model_exclude_none=True)
 async def delete_image(data: UserImagesD):
     try:
-        # get image by 
+        # get image to check if exist
         img = await ImageRoutes.get_by_id(data.cod_image)
-        # if image exist
         if img is not False:
+            # if image exist delete
             await ImageRoutes.delete(data.cod_image, data.cod_user)
         else:
             raise Exception("Image does not exist")
