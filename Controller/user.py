@@ -1,4 +1,4 @@
-from Utils.auth import JWTBearer, encryptPassword, signJWT
+from Utils.auth import encryptPassword, signJWT
 from fastapi import APIRouter, Path, status, Response
 from Model.models import User, User, SignToken
 from Routes.user import UserRoutes
@@ -22,30 +22,6 @@ async def get_all():
         return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
-@router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
-async def create_user(data: User):
-    try:
-        # encrypt password
-        data.password = encryptPassword(data.password)
-        # check if user does not exist
-        user_retrieved = await UserRoutes.get_by_nick(data.username)
-        if user_retrieved is False:
-            # create user
-            await UserRoutes.create(data)
-            user_retrieved = await UserRoutes.get_by_nick(data.username)
-            user_retrieved = dict(user_retrieved)
-            # generate token
-            token = signJWT(user_retrieved['username'])
-            sign_out = SignToken(token=token, user=user_retrieved)
-        else:
-            raise Exception("The user already existe")
-    except Exception as e:
-        print(e)
-        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
-    else:
-        return Response(ResponseSchema(detail="Successfully created", result=sign_out).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
-
-
 @router.get(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_by_nick(username: str = Path(..., alias="username")):
     try:
@@ -60,21 +36,26 @@ async def get_by_nick(username: str = Path(..., alias="username")):
         return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
-@router.delete(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
-async def delete_user(username: str = Path(..., alias="username")):
+@router.post(path="", response_model=ResponseSchema, response_model_exclude_none=True)
+async def create_user(data: User):
     try:
-        # get user by username
-        us = await UserRoutes.get_by_nick(username)
-        # delete if exist
-        if us:
-            await UserRoutes.delete(username)
+        # encrypt password
+        data.password = encryptPassword(data.password)
+        # check if user does not exist
+        user_retrieved = await UserRoutes.get_by_nick(data.username)
+        if user_retrieved is False:
+            # create user
+            user_created = await UserRoutes.create(data)
+            # generate token
+            token = signJWT(user_created.username)
+            sign_out = SignToken(token=token, user=dict(user_created))
         else:
-            raise Exception("The user does not exist")
+            raise Exception("The user already exist")
     except Exception as e:
         print(e)
-        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_404_NOT_FOUND, media_type="application/json")
+        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
-        return Response(status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
+        return Response(ResponseSchema(detail="Successfully created", result=sign_out).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
 
 
 @router.put(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
@@ -98,5 +79,22 @@ async def update_user(user: User, username: str = Path(..., alias="username")):
             raise Exception
     except Exception as e:
         return Response(ResponseSchema(detail=f"The username already exist, {str(e)}").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
+    else:
+        return Response(status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
+
+
+@router.delete(path="/{username}", response_model=ResponseSchema, response_model_exclude_none=True)
+async def delete_user(username: str = Path(..., alias="username")):
+    try:
+        # get user by username
+        user_retrieve = await UserRoutes.get_by_nick(username)
+        # delete if exist
+        if user_retrieve:
+            await UserRoutes.delete(username)
+        else:
+            raise Exception("The user does not exist")
+    except Exception as e:
+        print(e)
+        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_404_NOT_FOUND, media_type="application/json")
     else:
         return Response(status_code=status.HTTP_204_NO_CONTENT, media_type="application/json")
