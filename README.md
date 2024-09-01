@@ -10,6 +10,12 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the req
 pip install -r requirements.txt
 ```
 
+## Prisma client
+
+```bash
+prisma generate
+```
+
 ## Database
 
 Schema: public  
