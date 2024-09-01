@@ -1,7 +1,7 @@
 from fastapi import File, UploadFile
-from Model.models import User_Images
+from model.models import User_Images
 from datetime import datetime
-from Config.db import conn
+from config.db import conn
 from pathlib import Path
 import os
 

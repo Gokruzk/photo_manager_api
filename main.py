@@ -1,9 +1,9 @@
 from fastapi.middleware.cors import CORSMiddleware
-from Controller import country, image, user, auth
+from controller import country, image, user, auth
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from Config.db import conn
+from config.db import conn
 from pathlib import Path
 import uvicorn
 
