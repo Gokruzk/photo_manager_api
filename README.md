@@ -1,6 +1,6 @@
 # REST API Photo Album
 
-REST API made with FastAPI, PrismaORM and PostgreSQL for manage photo's albums.
+REST API made with FastAPI, PrismaORM and PostgreSQL for manage users' photos
 
 ## Requirements
 
