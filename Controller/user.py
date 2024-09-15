@@ -17,7 +17,7 @@ async def get_all():
         data = await UserRoutes.get_all()
     except Exception as e:
         print(e)
-        return Response(ResponseSchema(detail="Error retreiving data", result=data).model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
+        return Response(ResponseSchema(detail="Error retreiving data").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
     else:
         return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
