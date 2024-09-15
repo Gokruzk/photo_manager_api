@@ -1,7 +1,7 @@
-from Model.models import User, User, User_Retrieve
-from Routes.image import ImageRoutes
+from model.models import User, User, User_Retrieve
+from routes.image import ImageRoutes
 from datetime import datetime
-from Config.db import conn
+from config.db import conn
 from pathlib import Path
 
 # images path

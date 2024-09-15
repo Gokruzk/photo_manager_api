@@ -1,5 +1,5 @@
-from Model.models import Ubication
-from Config.db import conn
+from model.models import Ubication
+from config.db import conn
 
 
 class CountriesRoutes:

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Path, status, Response
-from Routes.country import CountriesRoutes
+from routes.country import CountriesRoutes
 from schema import ResponseSchema
 
 router = APIRouter(

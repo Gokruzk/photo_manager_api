@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path, File, UploadFile, status, Response, Form
-from Routes.image import ImageRoutes
-from Model.models import UserImagesD
+from routes.image import ImageRoutes
+from model.models import UserImagesD
 from schema import ResponseSchema
 from pathlib import Path as pt
 import uuid

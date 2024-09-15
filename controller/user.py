@@ -1,7 +1,7 @@
-from Utils.auth import encryptPassword, signJWT
+from utils.auth import encryptPassword, signJWT
 from fastapi import APIRouter, Path, status, Response
-from Model.models import User, User, SignToken
-from Routes.user import UserRoutes
+from model.models import User, User, SignToken
+from routes.user import UserRoutes
 from schema import ResponseSchema
 
 router = APIRouter(
