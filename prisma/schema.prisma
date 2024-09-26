@@ -35,9 +35,9 @@ model Descriptions {
 
 model Dates {
   cod_date   Int          @id
-  year       Int          
-  month      Int          
-  day        DateTime     
+  year       Int
+  month      Int
+  day        DateTime
   User_Dates User_Dates[]
   Images     Images[]
 
@@ -45,26 +45,29 @@ model Dates {
 }
 
 model Images {
-  cod_image   Int           @id @default(autoincrement())
-  cod_ubi     Int
-  image       String
-  uploadedat  Int
-  ubication   Ubication     @relation(fields: [cod_ubi], references: [cod_ubi])
-  uploaded    Dates         @relation(fields: [uploadedat], references: [cod_date])
+  cod_image  Int       @id @default(autoincrement())
+  cod_ubi    Int
+  cod_user   Int
+  image      String
+  uploadedat Int
+  ubication  Ubication @relation(fields: [cod_ubi], references: [cod_ubi])
+  uploaded   Dates     @relation(fields: [uploadedat], references: [cod_date])
+  user       User      @relation(fields: [cod_user], references: [cod_user])
 
   @@map("images")
 }
 
 model User {
-  cod_user    Int           @id @default(autoincrement())
-  cod_ubi     Int
-  cod_state   Int
-  username    String        @unique @db.VarChar(15)
-  email       String        @db.VarChar(50)
-  password    String        @db.VarChar(300)
-  ubication   Ubication     @relation(fields: [cod_ubi], references: [cod_ubi])
-  state       State         @relation(fields: [cod_state], references: [cod_state])
-  User_Dates  User_Dates[]
+  cod_user   Int          @id @default(autoincrement())
+  cod_ubi    Int
+  cod_state  Int
+  username   String       @unique @db.VarChar(15)
+  email      String       @db.VarChar(50)
+  password   String       @db.VarChar(300)
+  ubication  Ubication    @relation(fields: [cod_ubi], references: [cod_ubi])
+  state      State        @relation(fields: [cod_state], references: [cod_state])
+  User_Dates User_Dates[]
+  Images     Images[]
 
   @@map("users")
 }
