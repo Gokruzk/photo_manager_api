@@ -17,10 +17,12 @@ create table
    images (
       cod_image SERIAL not null,
       cod_ubi INT4 not null,
-      uploadedat Int not null, -- Dates relationship
+      cod_user INT4 not null, -- User relation
+      uploadedat INT4 not null, -- Dates relation
       "image" VARCHAR(300) not null,
       constraint PK_IMAGES primary key (cod_image),
-      constraint fk_image_dates foreign key (uploadedat) references dates (cod_date)
+      constraint fk_image_dates foreign key (uploadedat) references dates (cod_date),
+      constraint fk_user_image foreign key (cod_user) references users (cod_user)
    );
 
 /*==============================================================*/
