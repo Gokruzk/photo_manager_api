@@ -1,3 +1,5 @@
+Backend Completo con FastAPI, JWT, PostgreSQL y PrismaORM
+
 may-27-2024: database model
 may-28-2024: implement database model
 may-28-2024: routes for store users
@@ -19,3 +21,10 @@ august-17-2024: improve responses and clean data
 august-21-2024: front image page
 august-21-2024: front/back upload images
 august-22-2024: front/back delete images
+
+
+Correcciones y Nuevas Prácticas: Backend FastAPI, JWT, PostgreSQL y PrismaORM
+
+: database model
+: improve error management
+: improve responses
