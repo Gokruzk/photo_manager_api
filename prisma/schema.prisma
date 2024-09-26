@@ -22,7 +22,7 @@ model State {
   state     String @db.VarChar(8)
   User      User[]
 
-  @@map("state")
+  @@map("users_state")
 }
 
 model Descriptions {
@@ -30,7 +30,7 @@ model Descriptions {
   description     String       @db.VarChar(8)
   User_Dates      User_Dates[]
 
-  @@map("descriptions")
+  @@map("date_descriptions")
 }
 
 model Dates {
@@ -51,7 +51,6 @@ model Images {
   uploadedat  Int
   ubication   Ubication     @relation(fields: [cod_ubi], references: [cod_ubi])
   uploaded    Dates         @relation(fields: [uploadedat], references: [cod_date])
-  User_Images User_Images[]
 
   @@map("images")
 }
@@ -66,9 +65,8 @@ model User {
   ubication   Ubication     @relation(fields: [cod_ubi], references: [cod_ubi])
   state       State         @relation(fields: [cod_state], references: [cod_state])
   User_Dates  User_Dates[]
-  User_Images User_Images[]
 
-  @@map("user")
+  @@map("users")
 }
 
 model User_Dates {
@@ -81,15 +79,4 @@ model User_Dates {
 
   @@id([cod_date, cod_user, cod_description])
   @@map("user_dates")
-}
-
-model User_Images {
-  cod_image   Int
-  cod_user    Int
-  description String
-  images      Images @relation(fields: [cod_image], references: [cod_image])
-  user        User   @relation(fields: [cod_user], references: [cod_user])
-
-  @@id([cod_image, cod_user])
-  @@map("user_images")
 }
