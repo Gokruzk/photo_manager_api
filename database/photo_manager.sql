@@ -1,4 +1,40 @@
 /*==============================================================*/
+/* Table: ubication                                             */
+/*==============================================================*/
+create table
+   ubication (
+      cod_ubi INT4 not null,
+      country VARCHAR(100) null,
+      constraint PK_UBICATION primary key (cod_ubi)
+   );
+
+/*==============================================================*/
+/* Table: users_state                                                 */
+/*==============================================================*/
+create table
+   users_state (
+      cod_state INT4 not null,
+      "state" VARCHAR(8) not null,
+      constraint PK_STATE primary key (cod_state)
+   );
+
+/*==============================================================*/
+/* Table: "user"                                                */
+/*==============================================================*/
+create table
+   users (
+      cod_user SERIAL not null,
+      cod_ubi INT4 not null, -- Ubication relation
+      cod_state INT4 not null, -- User satet relation
+      username VARCHAR(15) UNIQUE not null,
+      email VARCHAR(50) not null,
+      "password" VARCHAR(300) not null,
+      constraint PK_USER primary key (cod_user),
+      constraint fk_user_ubication foreign key (cod_ubi) references ubication (cod_ubi),
+      constraint fk_user_state foreign key (cod_state) references users_state (cod_state)
+   );
+
+/*==============================================================*/
 /* Table: dates                                                 */
 /*==============================================================*/
 create table
@@ -26,16 +62,6 @@ create table
    );
 
 /*==============================================================*/
-/* Table: users_state                                                 */
-/*==============================================================*/
-create table
-   users_state (
-      cod_state INT4 not null,
-      "state" VARCHAR(8) not null,
-      constraint PK_STATE primary key (cod_state)
-   );
-
-/*==============================================================*/
 /* Table: date_descriptions                                     */
 /*==============================================================*/
 create table
@@ -43,32 +69,6 @@ create table
       cod_description INT4 not null,
       "description" VARCHAR(8) not null,
       constraint PK_DESCR primary key (cod_description)
-   );
-
-/*==============================================================*/
-/* Table: ubication                                             */
-/*==============================================================*/
-create table
-   ubication (
-      cod_ubi INT4 not null,
-      country VARCHAR(100) null,
-      constraint PK_UBICATION primary key (cod_ubi)
-   );
-
-/*==============================================================*/
-/* Table: "user"                                                */
-/*==============================================================*/
-create table
-   users (
-      cod_user SERIAL not null,
-      cod_ubi INT4 not null, -- Ubication relation
-      cod_state INT4 not null, -- User satet relation
-      username VARCHAR(15) UNIQUE not null,
-      email VARCHAR(50) not null,
-      "password" VARCHAR(300) not null,
-      constraint PK_USER primary key (cod_user),
-      constraint fk_user_ubication foreign key (cod_ubi) references ubication (cod_ubi),
-      constraint fk_user_state foreign key (cod_state) references users_state (cod_state)
    );
 
 /*==============================================================*/
