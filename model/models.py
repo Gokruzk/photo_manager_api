@@ -2,6 +2,7 @@ from typing import Optional, TypeVar
 from pydantic import BaseModel
 from datetime import date
 
+T = TypeVar("T")
 
 class Ubication(BaseModel):
     cod_ubi: int
@@ -25,9 +26,10 @@ class Description(BaseModel):
     description: str
 
 
-class Images(BaseModel):
+class User_Images(BaseModel):
     cod_image: Optional[int]
     cod_ubi: int
+    cod_user: int
     image: str
     uploadedat: int
     ubication: Ubication
@@ -35,7 +37,7 @@ class Images(BaseModel):
 
 
 class User(BaseModel):
-    cod_user: Optional[int]
+    cod_user: Optional[int] = None
     cod_ubi: int
     cod_state: int
     username: str
@@ -56,18 +58,6 @@ class User_Retrieve(User):
     User_Dates: list[User_Dates]
 
 
-class User_Images(BaseModel):
-    cod_image: int
-    cod_user: int
-    description: Optional[int]
-    images: Images
-
-
-class UserImagesD(BaseModel):
-    cod_user: int
-    cod_image: int
-
-
 class SignIn(BaseModel):
     username: str
     password: str
@@ -82,3 +72,8 @@ class UserSimple(BaseModel):
 class SignToken(BaseModel):
     token: str
     user: UserSimple
+
+
+class ResponseSchema(BaseModel):
+    detail: str
+    result: Optional[T] = None

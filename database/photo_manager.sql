@@ -216,9 +216,11 @@ create table
       constraint PK_STATE primary key (cod_state)
    );
 
-INSERT INTO users_state(cod_state, state)	VALUES
-(1, 'enabled'),
-(2, 'disabled')
+INSERT INTO
+   users_state (cod_state, state)
+VALUES
+   (1, 'enabled'),
+   (2, 'disabled');
 
 /*==============================================================*/
 /* Table: "user"                                                */
@@ -278,10 +280,11 @@ INSERT INTO
 VALUES
    (1, 'created'),
    (2, 'modified'),
-   (3, 'birthday')
-   /*==============================================================*/
-   /* Table: users_dates                                            */
-   /*==============================================================*/
+   (3, 'birthday');
+
+/*==============================================================*/
+/* Table: users_dates                                            */
+/*==============================================================*/
 create table
    users_dates (
       cod_date INT4 not null, -- Date relation

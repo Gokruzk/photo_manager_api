@@ -81,5 +81,5 @@ model User_Dates {
   description     Descriptions @relation(fields: [cod_description], references: [cod_description])
 
   @@id([cod_date, cod_user, cod_description])
-  @@map("user_dates")
+  @@map("users_dates")
 }
