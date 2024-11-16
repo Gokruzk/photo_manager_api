@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Path, status, Response
+from fastapi import APIRouter, status, Response, HTTPException
 from routes.country import CountriesRoutes
-from schema import ResponseSchema
+from model.models import ResponseSchema
 
 router = APIRouter(
     prefix="/country",
@@ -13,8 +13,18 @@ async def get_all():
     try:
         # get countries
         data = await CountriesRoutes.get_all()
-        if data is False:
-            raise Exception
+
+        if data == []:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No countries registered"
+            )
+        elif data is False:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="An unexpected error occurred"
+            )
+
     except Exception as e:
         print(e)
         return Response(ResponseSchema(detail="Error retreiving data").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")

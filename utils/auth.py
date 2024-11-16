@@ -5,7 +5,6 @@ import bcrypt
 import jwt
 
 secret = getenv("SECRET_KEY")
-algorithm = getenv("ALGORITHM")
 
 
 def encryptPassword(password: str) -> str:
@@ -23,5 +22,5 @@ def signJWT(username: str) -> Dict[str, str]:
         "exp": EXPIRES,
         "username": username,
     }
-    token = jwt.encode(payload, secret, algorithm)
+    token = jwt.encode(payload, secret, "HS256")
     return token

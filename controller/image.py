@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Path, File, UploadFile, status, Response, Form
+from fastapi import APIRouter, Path, File, UploadFile, status, Response, Form, HTTPException
 from routes.image import ImageRoutes
-from model.models import UserImagesD
-from schema import ResponseSchema
+from model.models  import ResponseSchema
 from pathlib import Path as pt
 import uuid
 import os
@@ -23,12 +22,30 @@ async def get_all(username: str = Path(..., alias="username")):
     try:
         # get all user's images
         data = await ImageRoutes.get_all(username)
-        if data is not False:
-            return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
-        else:
-            raise Exception("Error retreiving images")
+
+        if data == []:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="The user has no images"
+            )
+        elif data == 3:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="The user does not exist"
+            )
+        elif data is False:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="An unexpected error occurred"
+            )
+        
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        return Response(ResponseSchema(detail=str(e)).model_dump_json(), status_code=status.HTTP_404_NOT_FOUND, media_type="application/json")
+        print(e)
+        return Response(ResponseSchema(detail="An unexpected error occurred").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
+    else:
+        return Response(ResponseSchema(detail="Successfully retreived", result=data).model_dump_json(), status_code=status.HTTP_200_OK, media_type="application/json")
 
 
 @router.post(path="", response_model_exclude_none=True)
@@ -39,30 +56,55 @@ async def upload_image(username: str = Form(...), file: UploadFile = File(...)):
         # rename image
         new_filename = f"{uuid.uuid4()}.{file_type}"
         file.filename = new_filename
+
         # send data
-        await ImageRoutes.create(username, file)
-        return Response(ResponseSchema(detail="Successfully uploaded", result=file.filename).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
+        data = await ImageRoutes.create(username, file)
+
+        if data is False:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Error uploading image"
+            )
+        elif data == 3:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="The user does not exist"
+            )
+    except HTTPException as e:
+        raise e
     except Exception as e:
         print(e)
         return Response(ResponseSchema(detail="Error uploading image").model_dump_json(), status_code=status.HTTP_400_BAD_REQUEST, media_type="application/json")
+    else:
+        return Response(ResponseSchema(detail="Successfully uploaded", result=file.filename).model_dump_json(), status_code=status.HTTP_201_CREATED, media_type="application/json")
 
 
-@router.delete(path="", response_model=ResponseSchema, response_model_exclude_none=True)
-async def delete_image(data: UserImagesD):
+@router.delete(path="/{cod_image}", response_model=ResponseSchema, response_model_exclude_none=True)
+async def delete_image(cod_image: int = Path(..., alias="cod_image")):
     try:
-        # get image to check if exist
-        img = await ImageRoutes.get_by_id(data.cod_image)
-        if img is not False:
-            # if image exist delete
-            await ImageRoutes.delete(data.cod_image, data.cod_user, img)
-        else:
-            raise Exception("Image does not exist")
+        
+        img = await ImageRoutes.delete(cod_image)
+
+        # if image exist delete
+        if img == []:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="The image does not exist"
+            )
+        elif img is False:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="An unexpected error occurred"
+            )
+
+    except HTTPException as e:
+        raise e
     except Exception as e:
         print(e)
         return Response(
             ResponseSchema(
-                detail=str(e)).model_dump_json(),
-            status_code=status.HTTP_404_NOT_FOUND,
+                detail="An unexpected error occurred").model_dump_json(),
+            status_code=status.HTTP_400_BAD_REQUEST,
             media_type="application/json"
         )
     else:
