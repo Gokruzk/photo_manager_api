@@ -50,7 +50,7 @@ Create an `.env` file in the root of the project with the following variables:
 DB_URL="postgresql://[user]:[password]@[host]:5432/photo_manager"
 # Generate a key with this command: openssl rand -hex 32
 SECRET_KEY = [key]
-ALGORITHM = "HS256"
+API_EMAIL = [host]
 ```
 
 ### Step 5: Execution
