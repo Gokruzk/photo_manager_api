@@ -22,9 +22,7 @@ august-21-2024: front image page
 august-21-2024: front/back upload images
 august-22-2024: front/back delete images
 
-
-Correcciones y Nuevas Prácticas: Backend FastAPI, JWT, PostgreSQL y PrismaORM
-
-: database model
-: improve error management
-: improve responses
+Errors:
+    1: The user already exist
+    2: The username already exist
+    3: The user does not exist
